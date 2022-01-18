@@ -10,7 +10,7 @@
 #define DATASIZE 512
 #define DATAPACKETSIZE 516
 #define ACKSIZE 4
-char * service="1069";//port sur la machine srvtpinfo1.ensea.fr
+char * service="69";//port sur la machine srvtpinfo1.ensea.fr
 
 //getaddrinfo(node,service,hints,res);
 //node = adresse

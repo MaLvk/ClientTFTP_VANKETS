@@ -10,7 +10,7 @@
 #define DATASIZE 512
 #define DATAPACKETSIZE 516
 #define ACKSIZE 4
-char * service="1069";//port sur la machine srvtpinfo1.ensea.fr
+char * service="69";//port sur la machine srvtpinfo1.ensea.fr
 
 //getaddrinfo(node,service,hints,res);
 //node = adresse
@@ -79,6 +79,21 @@ void * ACKpacket(char * data_recv){
 	return paquet;
 }
 
+void * DATApacket(int numero,char * data){
+	char * paquet=malloc(DATAPACKETSIZE);
+	
+	//opcode DATA
+	paquet[0]=0;
+	paquet[1]=3;
+	//Block #
+	paquet[2]=numero/256; //comme c'est en octet 2^8=256
+	paquet[3]=numero%256;
+	//DATA
+	strcpy(&paquet[4],data);
+	
+	return paquet;
+}
+
 int main(int argc, char *argv[]){
 	struct addrinfo *res;
 	struct addrinfo hints;
@@ -116,15 +131,24 @@ int main(int argc, char *argv[]){
 		exit(EXIT_FAILURE);
 	}
 	
-	//envoie d'une requête RRQ
+	//envoie d'une requête WRQ
 	char * mode ="octet";
-	char * request=RRQpacket(filename,mode);
+	char * request=WRQpacket(filename,mode);
 	int size_request=2+strlen(filename)+1+strlen(mode)+1;
 	int is_send=sendto(sfd,request,size_request,0,res->ai_addr,res->ai_addrlen);
 	if (is_send==-1){
 		fprintf(stderr, "Error : %s n'a pas réussi à senvoyer une demande RRQ au serveur %s\n",argv[0],argv[1]);
 		exit(EXIT_FAILURE);
 	}
+	
+	//lecture du fichier
+	//char data[DATASIZE];
+	
+	//int descripteur=open(filename,O_RDWR,S_IRWXG|S_IRWXU|S_IRWXO);
+	
+	
+	
+	
 	
 	//récupération de la data
 	char data_recv[READSIZE];
